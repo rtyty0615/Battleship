@@ -1,0 +1,20 @@
+# --- Project Specific ---
+node_modules/
+dist/
+.env
+
+# --- Linux (Your current OS) ---
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# --- macOS (For collaborators) ---
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --- Windows (For collaborators) ---
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
