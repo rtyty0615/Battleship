@@ -1,9 +1,11 @@
 {
-  "name": "webpack-starter",
+  "name": "battleship",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
+    "format": "prettier . --write",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
@@ -14,9 +16,13 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "css-loader": "^7.1.4",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.6",
+    "prettier": "3.8.3",
     "style-loader": "^4.0.0",
     "webpack": "^5.105.4",
     "webpack-cli": "^6.0.1",
