@@ -30,6 +30,10 @@ export class GameBoard {
       for (let i = 0; i < shipLength; i++) {
         this.grid[x][y + i] = 1;
       }
+    } else if (direction === false) {
+      for (let i = 0; i < shipLength; i++) {
+        this.grid[x + i][y] = 1;
+      }
     }
   }
 
