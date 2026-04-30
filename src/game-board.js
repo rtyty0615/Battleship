@@ -31,6 +31,14 @@ export class GameBoard {
         this.grid[x][y + i] = 1;
       }
     } else if (direction === false) {
+      if (
+        x < 0 ||
+        x >= this.sideLength - shipLength + 1 ||
+        y < 0 ||
+        y >= this.sideLength
+      ) {
+        throw new Error("Coordinates must be in between board's side length!");
+      }
       for (let i = 0; i < shipLength; i++) {
         this.grid[x + i][y] = 1;
       }

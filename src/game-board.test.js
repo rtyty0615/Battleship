@@ -109,4 +109,39 @@ test("vertical: gameboard should include new ships coordinates when placing ship
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+  gamboardOne.placeShip(5, false, [5, 9]);
+  expect(gamboardOne.grid).toEqual([
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  ]);
+});
+
+test("vertical: gameboard should throw error if coordinates are outside of board", () => {
+  const gamboardOne = new GameBoard();
+  expect(() => gamboardOne.placeShip(3, false, [-1, 0])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.placeShip(3, false, [0, -1])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.placeShip(2, false, [9, 9])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.placeShip(3, false, [8, 9])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.placeShip(5, false, [6, 9])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.placeShip(3, false, [0, 10])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
 });
