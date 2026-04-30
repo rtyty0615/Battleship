@@ -1,4 +1,4 @@
-// import { Ship } from "./ship.js";
+import { Ship } from "./ship.js";
 
 export class GameBoard {
   constructor(sideLength = 10) {
@@ -12,10 +12,12 @@ export class GameBoard {
       arr.push(arrRow);
     }
     this.grid = arr;
+    this.shipList = [];
   }
 
-  placeShip(shipLength, direction, coordinates) {
-    // const newShip = new Ship(shipLength);
+  placeShip(shipNum, shipLength, direction, coordinates) {
+    const newShip = new Ship(shipNum, shipLength);
+    this.shipList.push(newShip);
     const [x, y] = coordinates;
 
     if (direction === true) {
@@ -51,7 +53,9 @@ export class GameBoard {
       throw new Error("Coordinates must be in between board's side length!");
     }
     if (this.grid[x][y] === 0) {
-      this.grid[x][y] = 2;
+      this.grid[x][y] = "x";
+    } else if (this.grid[x][y] === 1) {
+      this.grid[x][y] = 3;
     }
   }
 }
