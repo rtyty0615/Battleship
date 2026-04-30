@@ -145,3 +145,19 @@ test("vertical: gameboard should throw error if coordinates are outside of board
     "Coordinates must be in between board's side length!",
   );
 });
+
+test("receiveAttack: gameboard should throw error if coordinates are outside of board", () => {
+  const gamboardOne = new GameBoard();
+  expect(() => gamboardOne.receiveAttack([0, -1])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.receiveAttack([-1, 0])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.receiveAttack([10, 0])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+  expect(() => gamboardOne.receiveAttack([0, 10])).toThrow(
+    "Coordinates must be in between board's side length!",
+  );
+});

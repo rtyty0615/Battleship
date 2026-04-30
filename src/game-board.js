@@ -45,5 +45,10 @@ export class GameBoard {
     }
   }
 
-  receiveAttack() {}
+  receiveAttack(coordinates) {
+    const [x, y] = coordinates;
+    if (x < 0 || x >= this.sideLength || y < 0 || y >= this.sideLength) {
+      throw new Error("Coordinates must be in between board's side length!");
+    }
+  }
 }
