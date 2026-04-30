@@ -2,6 +2,7 @@ import { Ship } from "./ship.js";
 
 test("ship should initialize with zero hits", () => {
   const shipOne = new Ship(3);
+  expect(shipOne.len).toBe(3);
   expect(shipOne.hitNum).toBe(0);
 });
 

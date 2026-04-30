@@ -1,3 +1,5 @@
+// import { Ship } from "./ship.js";
+
 export class GameBoard {
   constructor(sideLength = 10) {
     this.sideLength = sideLength;
@@ -12,11 +14,14 @@ export class GameBoard {
     this.grid = arr;
   }
 
-  receiveAttack() {}
-
-  isSunk() {
-    if (this.len === this.hitNum) {
-      this.sunk = true;
+  placeShip(shipLength, direction, coordinates) {
+    // const newShip = new Ship(shipLength);
+    if (direction === true) {
+      for (let i = 0; i < shipLength; i++) {
+        this.grid[coordinates[0]][coordinates[1] + i] = 1;
+      }
     }
   }
+
+  receiveAttack() {}
 }
