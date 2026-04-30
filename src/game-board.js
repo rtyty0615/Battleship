@@ -50,5 +50,8 @@ export class GameBoard {
     if (x < 0 || x >= this.sideLength || y < 0 || y >= this.sideLength) {
       throw new Error("Coordinates must be in between board's side length!");
     }
+    if (this.grid[x][y] === 0) {
+      this.grid[x][y] = 2;
+    }
   }
 }
