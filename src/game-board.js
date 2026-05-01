@@ -59,6 +59,11 @@ export class GameBoard {
       this.grid[x][y] = "x";
     } else if (target > 0) {
       this.grid[x][y] *= -1;
+      const hitShip = this.shipList.find((ship) => ship.shipNum === target);
+      hitShip.hit();
+      if (hitShip.isSunk()) {
+        return `Ship number ${target} is sunk!`;
+      }
     }
   }
 }

@@ -11,8 +11,7 @@ export class Ship {
   }
 
   isSunk() {
-    if (this.len === this.hitNum) {
-      this.sunk = true;
-    }
+    this.sunk = this.hitNum >= this.len;
+    return this.sunk;
   }
 }
