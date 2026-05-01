@@ -295,3 +295,39 @@ test("gameboard should return the sunk ship when hit number is reached", () => {
     [0, 0, 0, 0, 0, 3, 3, 3, 3, 3],
   ]);
 });
+
+test("gameboard should return the sunk ship when hit number is reached", () => {
+  const gameBoardOne = new GameBoard();
+
+  gameBoardOne.placeShip(1, 3, true, [0, 0]);
+  gameBoardOne.placeShip(2, 5, true, [3, 2]);
+  gameBoardOne.placeShip(3, 5, true, [9, 5]);
+  gameBoardOne.receiveAttack([1, 4]);
+  gameBoardOne.receiveAttack([7, 3]);
+  gameBoardOne.receiveAttack([0, 0]);
+  gameBoardOne.receiveAttack([0, 1]);
+  gameBoardOne.receiveAttack([0, 2]);
+  gameBoardOne.receiveAttack([3, 2]);
+  gameBoardOne.receiveAttack([3, 3]);
+  gameBoardOne.receiveAttack([3, 4]);
+  gameBoardOne.receiveAttack([3, 5]);
+  gameBoardOne.receiveAttack([3, 6]);
+  gameBoardOne.receiveAttack([9, 5]);
+  gameBoardOne.receiveAttack([9, 6]);
+  gameBoardOne.receiveAttack([9, 7]);
+  gameBoardOne.receiveAttack([9, 8]);
+
+  expect(gameBoardOne.receiveAttack([9, 9])).toEqual("All ship are sunk!");
+  expect(gameBoardOne.grid).toEqual([
+    [-1, -1, -1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, "x", 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, -2, -2, -2, -2, -2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, "x", 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, -3, -3, -3, -3, -3],
+  ]);
+});

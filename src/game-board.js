@@ -13,9 +13,12 @@ export class GameBoard {
     }
     this.grid = arr;
     this.shipList = [];
+    this.totalShip = 0;
+    this.sunkShipNum = 0;
   }
 
   placeShip(shipNum, shipLength, direction, coordinates) {
+    this.totalShip += 1;
     const newShip = new Ship(shipNum, shipLength);
     this.shipList.push(newShip);
     const [x, y] = coordinates;
@@ -62,6 +65,10 @@ export class GameBoard {
       const hitShip = this.shipList.find((ship) => ship.shipNum === target);
       hitShip.hit();
       if (hitShip.isSunk()) {
+        this.sunkShipNum += 1;
+        if (this.sunkShipNum === this.totalShip) {
+          return "All ship are sunk!";
+        }
         return `Ship number ${target} is sunk!`;
       }
     }
