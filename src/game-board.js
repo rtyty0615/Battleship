@@ -30,7 +30,7 @@ export class GameBoard {
         throw new Error("Coordinates must be in between board's side length!");
       }
       for (let i = 0; i < shipLength; i++) {
-        this.grid[x][y + i] = 1;
+        this.grid[x][y + i] = shipNum;
       }
     } else if (direction === false) {
       if (
@@ -42,7 +42,7 @@ export class GameBoard {
         throw new Error("Coordinates must be in between board's side length!");
       }
       for (let i = 0; i < shipLength; i++) {
-        this.grid[x + i][y] = 1;
+        this.grid[x + i][y] = shipNum;
       }
     }
   }
@@ -52,10 +52,13 @@ export class GameBoard {
     if (x < 0 || x >= this.sideLength || y < 0 || y >= this.sideLength) {
       throw new Error("Coordinates must be in between board's side length!");
     }
-    if (this.grid[x][y] === 0) {
+    const target = this.grid[x][y];
+    if (target === "x" || target < 0) {
+      return;
+    } else if (target === 0) {
       this.grid[x][y] = "x";
-    } else if (this.grid[x][y] === 1) {
-      this.grid[x][y] = 3;
+    } else if (target > 0) {
+      this.grid[x][y] *= -1;
     }
   }
 }
