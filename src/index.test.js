@@ -1,0 +1,18 @@
+import { Game } from "./index.js";
+
+test("game.start should initialize ship placement", () => {
+  const newGame = new Game();
+  newGame.start();
+  expect(newGame.humanPlayer.game.grid).toEqual([
+    [1, 1, 1, 1, 1, 0, 0, 0, 0, 2],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+    [0, 0, 0, 3, 0, 0, 0, 0, 0, 2],
+    [0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 4, 4, 4, 0],
+    [5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+});

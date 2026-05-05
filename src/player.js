@@ -4,9 +4,10 @@ class Player {
     this.name = name;
     this.game = new GameBoard();
   }
+
+  initializeShip(shipNum, shipLength, direction, coordinates) {
+    this.game.placeShip(shipNum, shipLength, direction, coordinates);
+  }
 }
 
-const humanPlayer = new Player("Human");
-const computerPlayer = new Player("Computer");
-
-export { humanPlayer, computerPlayer };
+export { Player };

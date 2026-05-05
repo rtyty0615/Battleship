@@ -1,9 +1,10 @@
-import "./styles.css";
+import { Player } from "./player";
 
-// import { humanPlayer, computerPlayer } from "./player";
-
-class Game {
-  constructor() {}
+export class Game {
+  constructor() {
+    this.humanPlayer = new Player("Human");
+    this.computerPlayer = new Player("Computer");
+  }
 
   render() {
     const body = document.querySelector("body");
@@ -53,6 +54,7 @@ class Game {
       for (let j = 0; j < 10; j++) {
         const column = document.createElement("div");
         column.dataset.column = j;
+        column.addEventListener("click", () => {});
         row.appendChild(column);
       }
     }
@@ -61,7 +63,15 @@ class Game {
     main.append(humanPlayer, computerPlayer);
     body.append(main);
   }
-}
-const game = new Game();
 
-game.render();
+  start() {
+    this.humanPlayer.initializeShip(1, 5, true, [0, 0]);
+    this.humanPlayer.initializeShip(2, 4, false, [0, 9]);
+    this.humanPlayer.initializeShip(3, 3, false, [3, 3]);
+    this.humanPlayer.initializeShip(4, 3, true, [7, 6]);
+    this.humanPlayer.initializeShip(5, 2, false, [8, 0]);
+  }
+}
+// const newGame = new Game();
+
+// newGame.render();
