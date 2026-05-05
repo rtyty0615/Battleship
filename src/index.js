@@ -70,6 +70,12 @@ export class Game {
     this.humanPlayer.initializeShip(3, 3, false, [3, 3]);
     this.humanPlayer.initializeShip(4, 3, true, [7, 6]);
     this.humanPlayer.initializeShip(5, 2, false, [8, 0]);
+
+    this.computerPlayer.initializeShip(1, 5, true, [0, 0]);
+    this.computerPlayer.initializeShip(2, 4, false, [0, 9]);
+    this.computerPlayer.initializeShip(3, 3, false, [3, 3]);
+    this.computerPlayer.initializeShip(4, 3, true, [7, 6]);
+    this.computerPlayer.initializeShip(5, 2, false, [8, 0]);
   }
 }
 // const newGame = new Game();
