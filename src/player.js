@@ -1,5 +1,5 @@
-import { GameBoard } from "./game-board";
-class Player {
+import { GameBoard } from "./game-board.js";
+export class Player {
   constructor(name) {
     this.name = name;
     this.game = new GameBoard();
@@ -9,5 +9,3 @@ class Player {
     this.game.placeShip(shipNum, shipLength, direction, coordinates);
   }
 }
-
-export { Player };

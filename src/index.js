@@ -1,9 +1,24 @@
-import { Player } from "./player";
+import "./styles.css";
+import { Player } from "./player.js";
 
 export class Game {
   constructor() {
     this.humanPlayer = new Player("Human");
     this.computerPlayer = new Player("Computer");
+  }
+
+  start() {
+    this.humanPlayer.initializeShip(1, 5, true, [0, 0]);
+    this.humanPlayer.initializeShip(2, 4, false, [0, 9]);
+    this.humanPlayer.initializeShip(3, 3, false, [3, 3]);
+    this.humanPlayer.initializeShip(4, 3, true, [7, 6]);
+    this.humanPlayer.initializeShip(5, 2, false, [8, 0]);
+
+    this.computerPlayer.initializeShip(1, 5, true, [0, 0]);
+    this.computerPlayer.initializeShip(2, 4, false, [0, 9]);
+    this.computerPlayer.initializeShip(3, 3, false, [3, 3]);
+    this.computerPlayer.initializeShip(4, 3, true, [7, 6]);
+    this.computerPlayer.initializeShip(5, 2, false, [8, 0]);
   }
 
   render() {
@@ -34,6 +49,7 @@ export class Game {
       for (let j = 0; j < 10; j++) {
         const column = document.createElement("div");
         column.dataset.column = j;
+        column.dataset.row = i;
         row.appendChild(column);
       }
     }
@@ -54,6 +70,7 @@ export class Game {
       for (let j = 0; j < 10; j++) {
         const column = document.createElement("div");
         column.dataset.column = j;
+        column.dataset.row = i;
         column.addEventListener("click", () => {});
         row.appendChild(column);
       }
@@ -64,20 +81,22 @@ export class Game {
     body.append(main);
   }
 
-  start() {
-    this.humanPlayer.initializeShip(1, 5, true, [0, 0]);
-    this.humanPlayer.initializeShip(2, 4, false, [0, 9]);
-    this.humanPlayer.initializeShip(3, 3, false, [3, 3]);
-    this.humanPlayer.initializeShip(4, 3, true, [7, 6]);
-    this.humanPlayer.initializeShip(5, 2, false, [8, 0]);
-
-    this.computerPlayer.initializeShip(1, 5, true, [0, 0]);
-    this.computerPlayer.initializeShip(2, 4, false, [0, 9]);
-    this.computerPlayer.initializeShip(3, 3, false, [3, 3]);
-    this.computerPlayer.initializeShip(4, 3, true, [7, 6]);
-    this.computerPlayer.initializeShip(5, 2, false, [8, 0]);
+  humanAttack() {
+    const computerBoard = document.querySelector("#computer-player-board");
+    computerBoard.addEventListener("click", (event) => {
+      const column = event.target.closest("[data-column]");
+      const rowId = column.dataset.row;
+      const columnId = column.dataset.column;
+      this.computerPlayer.game.receiveAttack([rowId, columnId]);
+      const x = this.computerPlayer.game.grid;
+      console.log(x);
+    });
   }
-}
-// const newGame = new Game();
 
-// newGame.render();
+  takeTurnAttack() {}
+}
+const newGame = new Game();
+
+newGame.start();
+newGame.render();
+newGame.humanAttack();
