@@ -85,9 +85,30 @@ export class Game {
     const computerBoard = document.querySelector("#computer-player-board");
     computerBoard.addEventListener("click", (event) => {
       const column = event.target.closest("[data-column]");
-      const rowId = column.dataset.row;
-      const columnId = column.dataset.column;
-      this.computerPlayer.game.receiveAttack([rowId, columnId]);
+      if (!column) return;
+      const rowId = parseInt(column.dataset.row);
+      const columnId = parseInt(column.dataset.column);
+      const result = this.computerPlayer.game.receiveAttack([columnId, rowId]);
+      console.log(result);
+
+      if (result.type === "already-hit") {
+        return;
+      }
+
+      if (result.type === "miss") {
+        column.textContent = "x";
+      } else if (result.hit) {
+        column.textContent = "o";
+      }
+
+      if (result.isSunk) {
+        console.log(`Ship ${result.shipId} just sank!`);
+      }
+
+      if (result.gameOver) {
+        console.log("All ships destroyed! Human wins!");
+      }
+
       const x = this.computerPlayer.game.grid;
       console.log(x);
     });

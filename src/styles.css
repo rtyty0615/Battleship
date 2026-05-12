@@ -40,5 +40,14 @@ main {
   outline: 0.5px solid rgba(232, 232, 232, 0.5);
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
+}
+
+#human-player-board div div,
+#computer-player-board div div {
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

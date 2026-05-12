@@ -57,20 +57,33 @@ export class GameBoard {
     }
     const target = this.grid[x][y];
     if (target === "x" || target < 0) {
-      return;
-    } else if (target === 0) {
+      return { type: "already-hit", hit: false };
+    }
+    if (target === 0) {
       this.grid[x][y] = "x";
-    } else if (target > 0) {
+      return { type: "miss", hit: false };
+    }
+    if (target > 0) {
       this.grid[x][y] *= -1;
       const hitShip = this.shipList.find((ship) => ship.shipNum === target);
       hitShip.hit();
+      const result = {
+        type: "hit",
+        hit: true,
+        shipId: target,
+        isSunk: false,
+        gameOver: false,
+      };
       if (hitShip.isSunk()) {
         this.sunkShipNum += 1;
+        result.isSunk = true;
+        result.type = "sunk";
         if (this.sunkShipNum === this.totalShip) {
-          return "All ship are sunk!";
+          result.gameOver = true;
+          result.type = "gameOver";
         }
-        return `Ship number ${target} is sunk!`;
       }
+      return result;
     }
   }
 }
