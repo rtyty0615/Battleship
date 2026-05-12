@@ -5,6 +5,8 @@ export class Game {
   constructor() {
     this.humanPlayer = new Player("Human");
     this.computerPlayer = new Player("Computer");
+    this.activePlayer = "human";
+    this.result = false;
   }
 
   start() {
@@ -85,11 +87,13 @@ export class Game {
     const computerBoard = document.querySelector("#computer-player-board");
     computerBoard.addEventListener("click", (event) => {
       const column = event.target.closest("[data-column]");
+      if (this.activePlayer !== "human") {
+        return;
+      }
       if (!column) return;
       const rowId = parseInt(column.dataset.row);
       const columnId = parseInt(column.dataset.column);
       const result = this.computerPlayer.game.receiveAttack([columnId, rowId]);
-      console.log(result);
 
       if (result.type === "already-hit") {
         return;
@@ -106,11 +110,10 @@ export class Game {
       }
 
       if (result.gameOver) {
+        this.result = true;
         console.log("All ships destroyed! Human wins!");
       }
-
-      const x = this.computerPlayer.game.grid;
-      console.log(x);
+      this.switchPlayerTurn();
     });
   }
 
@@ -118,39 +121,43 @@ export class Game {
     const humanBoard = document.querySelector("#human-player-board");
     humanBoard.addEventListener("click", (event) => {
       const column = event.target.closest("[data-column]");
+      if (this.activePlayer !== "computer") {
+        return;
+      }
       if (!column) return;
       const rowId = parseInt(column.dataset.row);
       const columnId = parseInt(column.dataset.column);
       const result = this.humanPlayer.game.receiveAttack([columnId, rowId]);
-      console.log(result);
-
       if (result.type === "already-hit") {
         return;
       }
-
       if (result.type === "miss") {
         column.textContent = "x";
       } else if (result.hit) {
         column.textContent = "o";
       }
-
       if (result.isSunk) {
         console.log(`Ship ${result.shipId} just sank!`);
       }
-
       if (result.gameOver) {
+        this.result = true;
         console.log("All ships destroyed! Computer wins!");
       }
-
-      const x = this.humanPlayer.game.grid;
-      console.log(x);
+      this.switchPlayerTurn();
     });
   }
 
-  takeTurnAttack() {}
+  switchPlayerTurn() {
+    this.activePlayer = this.activePlayer === "human" ? "computer" : "human";
+  }
+
+  takeTurnAttack() {
+    this.humanAttack();
+    this.computerAttack();
+  }
 }
 const newGame = new Game();
 
 newGame.start();
 newGame.render();
-newGame.computerAttack();
+newGame.takeTurnAttack();
