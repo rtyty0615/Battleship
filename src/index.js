@@ -38,7 +38,7 @@ export class Game {
     humanPlayer.id = "human-player";
     const humanPlayerTitle = document.createElement("h2");
     humanPlayerTitle.id = "human-player-title";
-    humanPlayerTitle.textContent = "Human Player";
+    humanPlayerTitle.textContent = "Human Player Board";
 
     const humanPlayerBoard = document.createElement("div");
     humanPlayerBoard.id = "human-player-board";
@@ -59,7 +59,7 @@ export class Game {
     computerPlayer.id = "computer-player";
     const computerPlayerTitle = document.createElement("h2");
     computerPlayerTitle.id = "computer-player-title";
-    computerPlayerTitle.textContent = "Computer Player";
+    computerPlayerTitle.textContent = "Computer Player Board";
 
     const computerPlayerBoard = document.createElement("div");
     computerPlayerBoard.id = "computer-player-board";
@@ -114,10 +114,43 @@ export class Game {
     });
   }
 
+  computerAttack() {
+    const humanBoard = document.querySelector("#human-player-board");
+    humanBoard.addEventListener("click", (event) => {
+      const column = event.target.closest("[data-column]");
+      if (!column) return;
+      const rowId = parseInt(column.dataset.row);
+      const columnId = parseInt(column.dataset.column);
+      const result = this.humanPlayer.game.receiveAttack([columnId, rowId]);
+      console.log(result);
+
+      if (result.type === "already-hit") {
+        return;
+      }
+
+      if (result.type === "miss") {
+        column.textContent = "x";
+      } else if (result.hit) {
+        column.textContent = "o";
+      }
+
+      if (result.isSunk) {
+        console.log(`Ship ${result.shipId} just sank!`);
+      }
+
+      if (result.gameOver) {
+        console.log("All ships destroyed! Computer wins!");
+      }
+
+      const x = this.humanPlayer.game.grid;
+      console.log(x);
+    });
+  }
+
   takeTurnAttack() {}
 }
 const newGame = new Game();
 
 newGame.start();
 newGame.render();
-newGame.humanAttack();
+newGame.computerAttack();
