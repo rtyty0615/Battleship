@@ -1,7 +1,8 @@
 import "./styles.css";
 import { Player } from "./player.js";
+import { ScreenController } from "./screenController.js";
 
-export class Game {
+class GameController {
   constructor() {
     this.humanPlayer = new Player("Human");
     this.computerPlayer = new Player("Computer");
@@ -23,66 +24,6 @@ export class Game {
     this.computerPlayer.initializeShip(5, 2, false, [8, 0]);
   }
 
-  render() {
-    const body = document.querySelector("body");
-
-    const header = document.createElement("header");
-    const battelshipTitle = document.createElement("h1");
-    battelshipTitle.textContent = "Battleship";
-    const battelshipSubtitle = document.createElement("h2");
-    battelshipSubtitle.textContent = "Who's turn";
-    header.append(battelshipTitle, battelshipSubtitle);
-    body.append(header);
-
-    const main = document.createElement("main");
-
-    const humanPlayer = document.createElement("div");
-    humanPlayer.id = "human-player";
-    const humanPlayerTitle = document.createElement("h2");
-    humanPlayerTitle.id = "human-player-title";
-    humanPlayerTitle.textContent = "Human Player Board";
-
-    const humanPlayerBoard = document.createElement("div");
-    humanPlayerBoard.id = "human-player-board";
-    for (let i = 0; i < 10; i++) {
-      const row = document.createElement("div");
-      row.dataset.row = i;
-      humanPlayerBoard.appendChild(row);
-      for (let j = 0; j < 10; j++) {
-        const column = document.createElement("div");
-        column.dataset.column = j;
-        column.dataset.row = i;
-        row.appendChild(column);
-      }
-    }
-    humanPlayer.append(humanPlayerTitle, humanPlayerBoard);
-
-    const computerPlayer = document.createElement("div");
-    computerPlayer.id = "computer-player";
-    const computerPlayerTitle = document.createElement("h2");
-    computerPlayerTitle.id = "computer-player-title";
-    computerPlayerTitle.textContent = "Computer Player Board";
-
-    const computerPlayerBoard = document.createElement("div");
-    computerPlayerBoard.id = "computer-player-board";
-    for (let i = 0; i < 10; i++) {
-      const row = document.createElement("div");
-      row.dataset.row = i;
-      computerPlayerBoard.appendChild(row);
-      for (let j = 0; j < 10; j++) {
-        const column = document.createElement("div");
-        column.dataset.column = j;
-        column.dataset.row = i;
-        column.addEventListener("click", () => {});
-        row.appendChild(column);
-      }
-    }
-    computerPlayer.append(computerPlayerTitle, computerPlayerBoard);
-
-    main.append(humanPlayer, computerPlayer);
-    body.append(main);
-  }
-
   humanAttack() {
     const computerBoard = document.querySelector("#computer-player-board");
     computerBoard.addEventListener("click", (event) => {
@@ -93,7 +34,10 @@ export class Game {
       if (!column) return;
       const rowId = parseInt(column.dataset.row);
       const columnId = parseInt(column.dataset.column);
-      const result = this.computerPlayer.game.receiveAttack([columnId, rowId]);
+      const result = this.computerPlayer.gameBoard.receiveAttack([
+        columnId,
+        rowId,
+      ]);
 
       if (result.type === "already-hit") {
         return;
@@ -104,16 +48,19 @@ export class Game {
       } else if (result.hit) {
         column.textContent = "o";
       }
-
+      const subTitle = document.querySelector("#subtitle");
       if (result.isSunk) {
+        subTitle.textContent = `Computer's Ship ${result.shipId} just sank!`;
         console.log(`Ship ${result.shipId} just sank!`);
       }
 
       if (result.gameOver) {
         this.result = true;
+        subTitle.textContent = "All ships destroyed! Human wins!";
         console.log("All ships destroyed! Human wins!");
       }
       this.switchPlayerTurn();
+      subTitle.textContent = "Computer's turn";
     });
   }
 
@@ -127,7 +74,10 @@ export class Game {
       if (!column) return;
       const rowId = parseInt(column.dataset.row);
       const columnId = parseInt(column.dataset.column);
-      const result = this.humanPlayer.game.receiveAttack([columnId, rowId]);
+      const result = this.humanPlayer.gameBoard.receiveAttack([
+        columnId,
+        rowId,
+      ]);
       if (result.type === "already-hit") {
         return;
       }
@@ -136,14 +86,19 @@ export class Game {
       } else if (result.hit) {
         column.textContent = "o";
       }
+      const subTitle = document.querySelector("#subtitle");
       if (result.isSunk) {
+        subTitle.textContent = `Human's Ship ${result.shipId} just sank!`;
         console.log(`Ship ${result.shipId} just sank!`);
       }
       if (result.gameOver) {
         this.result = true;
+        subTitle.textContent = "All ships destroyed! Computer wins!";
         console.log("All ships destroyed! Computer wins!");
+        return;
       }
       this.switchPlayerTurn();
+      subTitle.textContent = "Human's turn";
     });
   }
 
@@ -156,8 +111,9 @@ export class Game {
     this.computerAttack();
   }
 }
-const newGame = new Game();
+const newGame = new GameController();
+const newUI = new ScreenController(newGame);
 
 newGame.start();
-newGame.render();
-newGame.takeTurnAttack();
+
+newUI.render();

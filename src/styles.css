@@ -11,6 +11,14 @@ select {
   font: inherit;
 }
 
+header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 body {
   height: 100vh;
   display: flex;
