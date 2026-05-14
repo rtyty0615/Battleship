@@ -12,7 +12,7 @@ export class ScreenController {
     console.log(y);
   }
 
-  render(message = "Human's turn") {
+  render(message = "Your turn") {
     const body = document.querySelector("body");
     body.innerHTML = "";
     const header = document.createElement("header");
@@ -47,6 +47,12 @@ export class ScreenController {
         const shipCell = gameBoardHuman.grid[i][j];
         if (shipCell !== 0) {
           column.textContent = shipCell;
+          if (shipCell < 0) {
+            column.style.backgroundColor = "red";
+          }
+          if (shipCell === "x") {
+            column.style.backgroundColor = "blue";
+          }
         }
       }
     }
@@ -72,8 +78,13 @@ export class ScreenController {
         column.dataset.row = i;
         row.appendChild(column);
         const shipCell = gameBoardComputer.grid[i][j];
-        if (shipCell < 0 || shipCell === "x") {
+        if (shipCell === "x") {
           column.textContent = shipCell;
+          column.style.backgroundColor = "blue";
+        }
+        if (shipCell < 0) {
+          column.textContent = shipCell;
+          column.style.backgroundColor = "red";
         }
       }
     }
@@ -87,11 +98,12 @@ export class ScreenController {
   humanClick() {
     const computerBoard = document.querySelector("body");
     computerBoard.addEventListener("click", async (event) => {
-      this.render("You are aiming...");
-      const column = event.target.closest("[data-column]");
-      if (this.game.activePlayer !== "human") {
+      if (this.game.activePlayer !== "human" || this.game.finalResult) {
         return;
       }
+      this.render("You are aiming...");
+      const column = event.target.closest("[data-column]");
+
       if (!column) return;
       const rowId = parseInt(column.dataset.row);
       const columnId = parseInt(column.dataset.column);
@@ -115,12 +127,37 @@ export class ScreenController {
 
       if (result.gameOver) {
         await new Promise((r) => setTimeout(r, 1000));
-        this.render("All ships destroyed! Human wins!");
+        this.render("All ships destroyed! You wins!");
+        return;
       }
-      await new Promise((r) => setTimeout(r, 1000));
-      this.game.computerAttack();
-      this.render();
+      this.computerTurn();
       return;
     });
+  }
+
+  async computerTurn() {
+    await new Promise((r) => setTimeout(r, 1000));
+    this.render("Computer is aiming...");
+    const result = this.game.computerAttack();
+
+    await new Promise((r) => setTimeout(r, 1000));
+    if (result.type === "miss") {
+      this.render("Computer misses!");
+    }
+    if (result.hit) {
+      this.render("Computer hits your ship!");
+    }
+    if (result.isSunk) {
+      await new Promise((r) => setTimeout(r, 1000));
+      this.render(`Your Ship ${result.shipId} just sank!`);
+    }
+
+    if (result.gameOver) {
+      await new Promise((r) => setTimeout(r, 1000));
+      this.render("All ships destroyed! Computer wins!");
+      return;
+    }
+    await new Promise((r) => setTimeout(r, 1000));
+    this.render();
   }
 }

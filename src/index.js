@@ -39,14 +39,19 @@ class GameController {
   }
 
   computerAttack() {
-    const x = Math.floor(Math.random() * 10);
-    const y = Math.floor(Math.random() * 10);
-    const result = this.humanPlayer.gameBoard.receiveAttack(x, y);
-    if (result.type === "already-hit") {
-      this.computerAttack();
-      return;
+    let result;
+    do {
+      const x = Math.floor(Math.random() * 10);
+      const y = Math.floor(Math.random() * 10);
+      result = this.humanPlayer.gameBoard.receiveAttack(x, y);
+    } while (result.type === "already-hit");
+
+    if (result.gameOver) {
+      this.finalResult = true;
+      return result;
     }
     this.switchPlayerTurn();
+    return result;
   }
 
   switchPlayerTurn() {
