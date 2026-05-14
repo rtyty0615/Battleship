@@ -27,7 +27,7 @@ class GameController {
   playTurn(x, y) {
     const result = this.computerPlayer.gameBoard.receiveAttack(x, y);
     if (result.type === "already-hit") {
-      return;
+      return result;
     }
 
     if (result.gameOver) {
@@ -47,7 +47,6 @@ class GameController {
       return;
     }
     this.switchPlayerTurn();
-    console.log(this.activePlayer);
   }
 
   switchPlayerTurn() {

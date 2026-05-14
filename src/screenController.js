@@ -12,7 +12,7 @@ export class ScreenController {
     console.log(y);
   }
 
-  render() {
+  render(message = "Human's turn") {
     const body = document.querySelector("body");
     body.innerHTML = "";
     const header = document.createElement("header");
@@ -20,7 +20,7 @@ export class ScreenController {
     battelshipTitle.textContent = "Battleship";
     const battelshipSubtitle = document.createElement("h2");
     battelshipSubtitle.id = "subtitle";
-    battelshipSubtitle.textContent = "Human's turn";
+    battelshipSubtitle.textContent = message;
     header.append(battelshipTitle, battelshipSubtitle);
     body.append(header);
     const main = document.createElement("main");
@@ -86,7 +86,8 @@ export class ScreenController {
 
   humanClick() {
     const computerBoard = document.querySelector("body");
-    computerBoard.addEventListener("click", (event) => {
+    computerBoard.addEventListener("click", async (event) => {
+      this.render("You are aiming...");
       const column = event.target.closest("[data-column]");
       if (this.game.activePlayer !== "human") {
         return;
@@ -95,21 +96,28 @@ export class ScreenController {
       const rowId = parseInt(column.dataset.row);
       const columnId = parseInt(column.dataset.column);
       const result = this.game.playTurn(rowId, columnId);
-      this.print();
-      this.render();
-      const subTitle = document.querySelector("#subtitle");
-      if (result.type === "miss" || result.hit) {
-        console.log(this.game.activePlayer);
+      if (result.type === "already-hit") {
+        this.render();
+        return;
+      }
+      await new Promise((r) => setTimeout(r, 1000));
+
+      if (result.type === "miss") {
+        this.render("You miss!");
+      }
+      if (result.hit) {
+        this.render("You hit the enemy's ship!");
       }
       if (result.isSunk) {
-        subTitle.textContent = `Computer's Ship ${result.shipId} just sank!`;
-        console.log(`Ship ${result.shipId} just sank!`);
+        await new Promise((r) => setTimeout(r, 1000));
+        this.render(`Computer's Ship ${result.shipId} just sank!`);
       }
 
       if (result.gameOver) {
-        subTitle.textContent = "All ships destroyed! Human wins!";
-        console.log("All ships destroyed! Human wins!");
+        await new Promise((r) => setTimeout(r, 1000));
+        this.render("All ships destroyed! Human wins!");
       }
+      await new Promise((r) => setTimeout(r, 1000));
       this.game.computerAttack();
       this.render();
       return;
