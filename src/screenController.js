@@ -101,10 +101,10 @@ export class ScreenController {
       if (this.game.activePlayer !== "human" || this.game.finalResult) {
         return;
       }
-      this.render("You are aiming...");
+      if (!event.target.closest("#computer-player-board")) return;
       const column = event.target.closest("[data-column]");
-
       if (!column) return;
+      this.render("You are aiming...");
       const rowId = parseInt(column.dataset.row);
       const columnId = parseInt(column.dataset.column);
       const result = this.game.playTurn(rowId, columnId);
@@ -130,7 +130,7 @@ export class ScreenController {
         this.render("All ships destroyed! You wins!");
         return;
       }
-      this.computerTurn();
+      await this.computerTurn();
       return;
     });
   }
