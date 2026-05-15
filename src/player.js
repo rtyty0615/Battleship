@@ -4,8 +4,4 @@ export class Player {
     this.name = name;
     this.gameBoard = new GameBoard();
   }
-
-  initializeShip(shipNum, shipLength, direction, coordinates) {
-    this.gameBoard.placeShip(shipNum, shipLength, direction, coordinates);
-  }
 }

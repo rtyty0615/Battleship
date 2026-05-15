@@ -18,11 +18,7 @@ export class GameBoard {
   }
 
   placeShip(shipNum, shipLength, direction, coordinates) {
-    this.totalShip += 1;
-    const newShip = new Ship(shipNum, shipLength);
-    this.shipList.push(newShip);
     const [x, y] = coordinates;
-
     if (direction === true) {
       if (
         x < 0 ||
@@ -30,7 +26,12 @@ export class GameBoard {
         y < 0 ||
         y >= this.sideLength - shipLength + 1
       ) {
-        throw new Error("Coordinates must be in between board's side length!");
+        return true;
+      }
+      for (let i = 0; i < shipLength; i++) {
+        if (this.grid[x][y + i] !== 0) {
+          return true;
+        }
       }
       for (let i = 0; i < shipLength; i++) {
         this.grid[x][y + i] = shipNum;
@@ -42,12 +43,22 @@ export class GameBoard {
         y < 0 ||
         y >= this.sideLength
       ) {
-        throw new Error("Coordinates must be in between board's side length!");
+        return true;
+      }
+      for (let i = 0; i < shipLength; i++) {
+        if (this.grid[x + i][y] !== 0) {
+          return true;
+        }
       }
       for (let i = 0; i < shipLength; i++) {
         this.grid[x + i][y] = shipNum;
       }
     }
+    this.totalShip += 1;
+    const newShip = new Ship(shipNum, shipLength);
+    this.shipList.push(newShip);
+    console.log(this.shipList);
+    return false;
   }
 
   receiveAttack(x, y) {
