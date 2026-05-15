@@ -79,12 +79,14 @@ export class ScreenController {
         row.appendChild(column);
         const shipCell = gameBoardComputer.grid[i][j];
         if (shipCell === "x") {
-          column.textContent = shipCell;
+          column.textContent = "•";
           column.style.backgroundColor = "blue";
+          column.style.color = "white";
         }
         if (shipCell < 0) {
-          column.textContent = shipCell;
+          column.textContent = "•";
           column.style.backgroundColor = "red";
+          column.style.color = "white";
         }
       }
     }
