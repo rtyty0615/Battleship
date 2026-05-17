@@ -57,13 +57,12 @@ export class GameBoard {
     this.totalShip += 1;
     const newShip = new Ship(shipNum, shipLength);
     this.shipList.push(newShip);
-    console.log(this.shipList);
     return false;
   }
 
   receiveAttack(x, y) {
     if (x < 0 || x >= this.sideLength || y < 0 || y >= this.sideLength) {
-      throw new Error("Coordinates must be in between board's side length!");
+      return { type: "outside-of-board", hit: false };
     }
     const target = this.grid[x][y];
     if (target === "x" || target < 0) {

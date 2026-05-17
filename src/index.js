@@ -8,6 +8,7 @@ class GameController {
     this.computerPlayer = new Player("Computer");
     this.activePlayer = "human";
     this.finalResult = false;
+    this.hitShipList = [];
   }
 
   start() {
@@ -66,18 +67,97 @@ class GameController {
   }
 
   computerAttack() {
-    let result;
-    do {
-      const x = Math.floor(Math.random() * 10);
-      const y = Math.floor(Math.random() * 10);
-      result = this.humanPlayer.gameBoard.receiveAttack(x, y);
-    } while (result.type === "already-hit");
+    let result, x, y;
+    if (this.hitShipList.length !== 0) {
+      const { coordinates } = this.hitShipList[0];
+      console.log(coordinates);
+
+      if (coordinates.length === 1) {
+        [x, y] = coordinates[0];
+        const adjacentTarget = [
+          [1, 0],
+          [-1, 0],
+          [0, -1],
+          [0, 1],
+        ];
+        for (const i of adjacentTarget) {
+          result = this.humanPlayer.gameBoard.receiveAttack(x + i[0], y + i[1]);
+          if (result.type === "hit" || result.type === "miss") {
+            break;
+          }
+        }
+      } else if (coordinates.length >= 2) {
+        if (coordinates[0][0] === coordinates[coordinates.length - 1][0]) {
+          const row = coordinates[0][0];
+          const firstCol = coordinates[0][1];
+          const lastCol = coordinates[coordinates.length - 1][1];
+          const targets = [
+            firstCol + 1,
+            firstCol - 1,
+            lastCol + 1,
+            lastCol - 1,
+          ];
+          for (const col of targets) {
+            result = this.humanPlayer.gameBoard.receiveAttack(row, col);
+            if (result.type === "hit" || result.type === "miss") {
+              break;
+            }
+          }
+        } else if (
+          coordinates[0][1] === coordinates[coordinates.length - 1][1]
+        ) {
+          const col = coordinates[0][1];
+          const firstRow = coordinates[0][0];
+          const lastRow = coordinates[coordinates.length - 1][0];
+          const targets = [
+            firstRow + 1,
+            firstRow - 1,
+            lastRow + 1,
+            lastRow - 1,
+          ];
+          for (const row of targets) {
+            result = this.humanPlayer.gameBoard.receiveAttack(row, col);
+            if (result.type === "hit" || result.type === "miss") {
+              break;
+            }
+          }
+        }
+      }
+    } else {
+      do {
+        x = Math.floor(Math.random() * 10);
+        y = Math.floor(Math.random() * 10);
+        result = this.humanPlayer.gameBoard.receiveAttack(x, y);
+      } while (result.type === "already-hit");
+    }
+
+    if (result.type === "hit") {
+      if (result.isSunk === true) {
+        this.hitShipList = this.hitShipList.filter(
+          (ship) => ship.shipId !== result.shipId,
+        );
+      }
+      const existingShip = this.hitShipList.find(
+        (ship) => ship.shipId === result.shipId,
+      );
+
+      if (existingShip) {
+        existingShip.coordinates.push([x, y]);
+      }
+      const hitShip = {
+        shipId: result.shipId,
+        isSunk: result.isSunk,
+        coordinates: [[x, y]],
+      };
+      this.hitShipList.push(hitShip);
+    }
 
     if (result.gameOver) {
       this.finalResult = true;
       return result;
     }
     this.switchPlayerTurn();
+    console.log(this.hitShipList);
     return result;
   }
 
