@@ -159,8 +159,10 @@ class GameController {
 const newGame = new GameController();
 const newUI = new ScreenController(newGame);
 
-newGame.randomizeShips();
+// newGame.randomizeShips();
 
-newUI.render();
+newUI.dragDrop();
 
-newUI.humanClick();
+// newUI.render();
+
+// newUI.humanClick();

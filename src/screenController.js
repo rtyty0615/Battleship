@@ -12,6 +12,131 @@ export class ScreenController {
     console.log(y);
   }
 
+  dragDrop() {
+    const body = document.querySelector("body");
+    body.innerHTML = "";
+    const header = document.createElement("header");
+    const battelshipTitle = document.createElement("h1");
+    battelshipTitle.textContent = "Battleship";
+    header.append(battelshipTitle);
+    body.append(header);
+
+    const main = document.createElement("main");
+    const humanPlayer = document.createElement("div");
+    humanPlayer.id = "human-player";
+    const humanPlayerBoard = document.createElement("div");
+    humanPlayerBoard.id = "human-player-board";
+
+    const gameBoardHuman = this.game.humanPlayer.gameBoard;
+    for (let i = 0; i < gameBoardHuman.sideLength; i++) {
+      const row = document.createElement("div");
+      row.dataset.row = i;
+      humanPlayerBoard.appendChild(row);
+      for (let j = 0; j < gameBoardHuman.sideLength; j++) {
+        const column = document.createElement("div");
+        column.dataset.column = j;
+        column.dataset.row = i;
+        row.appendChild(column);
+        const shipCell = gameBoardHuman.grid[i][j];
+        if (shipCell !== 0) {
+          column.textContent = shipCell;
+          if (shipCell < 0) {
+            column.style.backgroundColor = "red";
+          }
+          if (shipCell === "x") {
+            column.style.backgroundColor = "blue";
+          }
+        }
+      }
+    }
+    humanPlayer.append(humanPlayerBoard);
+
+    const instruction = document.createElement("div");
+    instruction.id = "instruction";
+    const battelshipSubtitle = document.createElement("h2");
+    battelshipSubtitle.id = "subtitle";
+    battelshipSubtitle.textContent = "Place your Ship:";
+
+    const shipType = document.createElement("div");
+    shipType.id = "ship-type";
+
+    const shipOne = document.createElement("div");
+    shipOne.id = "ship-one";
+    const shipOneTitle = document.createElement("h3");
+    shipOneTitle.textContent = "Ship No.1";
+    const shipOneBody = document.createElement("div");
+    shipOneBody.classList.add("ship-body");
+    shipOneBody.id = "ship-one-body";
+    for (let i = 0; i < 5; i++) {
+      const cell = document.createElement("div");
+      cell.textContent = i;
+      shipOneBody.append(cell);
+    }
+    shipOne.append(shipOneTitle, shipOneBody);
+
+    const shipTwo = document.createElement("div");
+    shipTwo.id = "ship-two";
+    const shipTwoTitle = document.createElement("h3");
+    shipTwoTitle.textContent = "Ship No.2";
+    const shipTwoBody = document.createElement("div");
+    shipTwoBody.classList.add("ship-body");
+    shipTwoBody.id = "ship-two-body";
+    for (let i = 0; i < 4; i++) {
+      const cell = document.createElement("div");
+      cell.textContent = i;
+      shipTwoBody.append(cell);
+    }
+    shipTwo.append(shipTwoTitle, shipTwoBody);
+
+    const shipThree = document.createElement("div");
+    shipThree.id = "ship-three";
+    const shipThreeTitle = document.createElement("h3");
+    shipThreeTitle.textContent = "Ship No.3";
+    const shipThreeBody = document.createElement("div");
+    shipThreeBody.classList.add("ship-body");
+    shipThreeBody.id = "ship-three-body";
+    for (let i = 0; i < 3; i++) {
+      const cell = document.createElement("div");
+      cell.textContent = i;
+      shipThreeBody.append(cell);
+    }
+    shipThree.append(shipThreeTitle, shipThreeBody);
+
+    const shipFour = document.createElement("div");
+    shipFour.id = "ship-four";
+    const shipFourTitle = document.createElement("h3");
+    shipFourTitle.textContent = "Ship No.4";
+    const shipFourBody = document.createElement("div");
+    shipFourBody.classList.add("ship-body");
+    shipFourBody.id = "ship-four-body";
+    for (let i = 0; i < 3; i++) {
+      const cell = document.createElement("div");
+      cell.textContent = i;
+      shipFourBody.append(cell);
+    }
+    shipFour.append(shipFourTitle, shipFourBody);
+
+    const shipFive = document.createElement("div");
+    shipFive.id = "ship-five";
+    const shipFiveTitle = document.createElement("h3");
+    shipFiveTitle.textContent = "Ship No.5";
+    const shipFiveBody = document.createElement("div");
+    shipFiveBody.classList.add("ship-body");
+    shipFiveBody.id = "ship-five-body";
+    for (let i = 0; i < 2; i++) {
+      const cell = document.createElement("div");
+      cell.textContent = i;
+      shipFiveBody.append(cell);
+    }
+    shipFive.append(shipFiveTitle, shipFiveBody);
+
+    shipType.append(shipOne, shipTwo, shipThree, shipFour, shipFive);
+    instruction.append(battelshipSubtitle, shipType);
+
+    main.append(humanPlayer, instruction);
+    body.append(main);
+  }
+
   render(message = "Your turn") {
     const body = document.querySelector("body");
     body.innerHTML = "";
@@ -24,12 +149,11 @@ export class ScreenController {
     header.append(battelshipTitle, battelshipSubtitle);
     body.append(header);
     const main = document.createElement("main");
-    main.innerHTML = "";
     const humanPlayer = document.createElement("div");
     humanPlayer.id = "human-player";
     const humanPlayerTitle = document.createElement("h2");
     humanPlayerTitle.id = "human-player-title";
-    humanPlayerTitle.textContent = "Human Player Board";
+    humanPlayerTitle.textContent = "Your Board";
 
     const humanPlayerBoard = document.createElement("div");
     humanPlayerBoard.id = "human-player-board";

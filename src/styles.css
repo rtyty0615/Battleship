@@ -4,6 +4,26 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+}
+
+h1 {
+  font-size: 8rem;
+}
+
+h2 {
+  font-size: 5rem;
+}
+
+h3 {
+  font-size: 3rem;
+}
+
 input,
 button,
 textarea,
@@ -31,7 +51,8 @@ body {
 main {
   display: flex;
   flex-direction: row;
-  gap: 50px;
+  gap: 80px;
+  justify-content: center;
 }
 
 #human-player-board,
@@ -57,5 +78,36 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 5rem;
+}
+
+#instruction {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+#ship-type {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.ship-body {
+  display: inline-flex;
+  align-items: center;
+  background-color: grey;
+}
+
+.ship-body div {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #333;
+  border-right: none;
+  padding: 20px solid rgba(255, 109, 109, 0.5);
+}
+
+.ship-body div:last-child {
+  border-right: 1px solid #333;
 }
