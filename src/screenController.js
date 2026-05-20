@@ -12,7 +12,7 @@ export class ScreenController {
     console.log(y);
   }
 
-  dragDrop() {
+  placeShipMenu() {
     const body = document.querySelector("body");
     body.innerHTML = "";
     const header = document.createElement("header");
@@ -26,6 +26,7 @@ export class ScreenController {
     humanPlayer.id = "human-player";
     const humanPlayerBoard = document.createElement("div");
     humanPlayerBoard.id = "human-player-board";
+    humanPlayerBoard.classList.add("target-zone");
 
     const gameBoardHuman = this.game.humanPlayer.gameBoard;
     for (let i = 0; i < gameBoardHuman.sideLength; i++) {
@@ -39,13 +40,7 @@ export class ScreenController {
         row.appendChild(column);
         const shipCell = gameBoardHuman.grid[i][j];
         if (shipCell !== 0) {
-          column.textContent = shipCell;
-          if (shipCell < 0) {
-            column.style.backgroundColor = "red";
-          }
-          if (shipCell === "x") {
-            column.style.backgroundColor = "blue";
-          }
+          column.style.backgroundColor = "grey";
         }
       }
     }
@@ -67,6 +62,9 @@ export class ScreenController {
     const shipOneBody = document.createElement("div");
     shipOneBody.classList.add("ship-body");
     shipOneBody.id = "ship-one-body";
+    shipOneBody.dataset.num = "1";
+    shipOneBody.dataset.len = "5";
+    shipOneBody.draggable = true;
     for (let i = 0; i < 5; i++) {
       const cell = document.createElement("div");
       cell.textContent = i;
@@ -81,9 +79,11 @@ export class ScreenController {
     const shipTwoBody = document.createElement("div");
     shipTwoBody.classList.add("ship-body");
     shipTwoBody.id = "ship-two-body";
+    shipTwoBody.dataset.num = "2";
+    shipTwoBody.dataset.len = "4";
+    shipTwoBody.draggable = true;
     for (let i = 0; i < 4; i++) {
       const cell = document.createElement("div");
-      cell.textContent = i;
       shipTwoBody.append(cell);
     }
     shipTwo.append(shipTwoTitle, shipTwoBody);
@@ -95,9 +95,11 @@ export class ScreenController {
     const shipThreeBody = document.createElement("div");
     shipThreeBody.classList.add("ship-body");
     shipThreeBody.id = "ship-three-body";
+    shipThreeBody.dataset.num = "3";
+    shipThreeBody.dataset.len = "3";
+    shipThreeBody.draggable = true;
     for (let i = 0; i < 3; i++) {
       const cell = document.createElement("div");
-      cell.textContent = i;
       shipThreeBody.append(cell);
     }
     shipThree.append(shipThreeTitle, shipThreeBody);
@@ -109,9 +111,11 @@ export class ScreenController {
     const shipFourBody = document.createElement("div");
     shipFourBody.classList.add("ship-body");
     shipFourBody.id = "ship-four-body";
+    shipFourBody.dataset.num = "4";
+    shipFourBody.dataset.len = "3";
+    shipFourBody.draggable = true;
     for (let i = 0; i < 3; i++) {
       const cell = document.createElement("div");
-      cell.textContent = i;
       shipFourBody.append(cell);
     }
     shipFour.append(shipFourTitle, shipFourBody);
@@ -123,9 +127,11 @@ export class ScreenController {
     const shipFiveBody = document.createElement("div");
     shipFiveBody.classList.add("ship-body");
     shipFiveBody.id = "ship-five-body";
+    shipFiveBody.dataset.num = "5";
+    shipFiveBody.dataset.len = "2";
+    shipFiveBody.draggable = true;
     for (let i = 0; i < 2; i++) {
       const cell = document.createElement("div");
-      cell.textContent = i;
       shipFiveBody.append(cell);
     }
     shipFive.append(shipFiveTitle, shipFiveBody);
@@ -135,6 +141,57 @@ export class ScreenController {
 
     main.append(humanPlayer, instruction);
     body.append(main);
+  }
+
+  dragDrop() {
+    const body = document.querySelector("body");
+    let shipNum, shipLength;
+
+    body.addEventListener("dragstart", (ev) => {
+      if (!ev.target.classList.contains("ship-body")) return;
+
+      const computedStyle = window.getComputedStyle(ev.target);
+      shipNum = parseInt(ev.target.dataset.num);
+      shipLength = parseInt(ev.target.dataset.len);
+      ev.dataTransfer.setData(
+        "background-color",
+        computedStyle.backgroundColor,
+      );
+      ev.dataTransfer.setData("border", computedStyle.border);
+    });
+
+    body.addEventListener("dragover", (ev) => {
+      if (!ev.target.closest(".target-zone")) return;
+      ev.preventDefault();
+    });
+
+    body.addEventListener("drop", (ev) => {
+      if (!ev.target.closest(".target-zone")) return;
+      ev.preventDefault();
+
+      const x = parseInt(ev.target.dataset.row);
+      const y = parseInt(ev.target.dataset.column);
+      const coordinates = [x, y];
+      console.log(x, y, shipNum, shipLength);
+      const result = this.game.humanPlayer.gameBoard.placeShip(
+        shipNum,
+        shipLength,
+        true,
+        coordinates,
+      );
+      this.print();
+      console.log(result);
+      if (result) {
+        return;
+      }
+      const droppedBgColor = ev.dataTransfer.getData("background-color");
+      const droppedBorder = ev.dataTransfer.getData("border");
+
+      ev.target.style.backgroundColor = droppedBgColor;
+      ev.target.style.border = droppedBorder;
+
+      this.placeShipMenu();
+    });
   }
 
   render(message = "Your turn") {

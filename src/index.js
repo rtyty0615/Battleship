@@ -161,6 +161,8 @@ const newUI = new ScreenController(newGame);
 
 // newGame.randomizeShips();
 
+newUI.placeShipMenu();
+
 newUI.dragDrop();
 
 // newUI.render();
