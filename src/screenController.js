@@ -49,19 +49,25 @@ export class ScreenController {
 
     const instruction = document.createElement("div");
     instruction.id = "instruction";
-    const battelshipSubtitle = document.createElement("h2");
-    battelshipSubtitle.id = "subtitle";
-    battelshipSubtitle.textContent = "Place your Ship:";
+    const subtitleContainer = document.createElement("div");
+    subtitleContainer.id = "subtitle-container";
+    const battleshipSubtitle = document.createElement("h2");
+    battleshipSubtitle.id = "subtitle";
+    battleshipSubtitle.textContent = "Place your Ship:";
+    const directionButton = document.createElement("button");
+    directionButton.id = "direction-btn";
+    directionButton.textContent = "Vertical";
+    subtitleContainer.append(battleshipSubtitle, directionButton);
 
-    const shipType = document.createElement("div");
-    shipType.id = "ship-type";
+    const shipList = document.createElement("div");
+    shipList.classList.add("ship-list", "horizontal-list");
 
     const shipOne = document.createElement("div");
     shipOne.id = "ship-one";
     const shipOneTitle = document.createElement("h3");
     shipOneTitle.textContent = "Ship No.1";
     const shipOneBody = document.createElement("div");
-    shipOneBody.classList.add("ship-body");
+    shipOneBody.classList.add("ship-body", "horizontal-body");
     shipOneBody.id = "ship-one-body";
     shipOneBody.dataset.num = "1";
     shipOneBody.dataset.len = "5";
@@ -81,7 +87,7 @@ export class ScreenController {
     const shipTwoTitle = document.createElement("h3");
     shipTwoTitle.textContent = "Ship No.2";
     const shipTwoBody = document.createElement("div");
-    shipTwoBody.classList.add("ship-body");
+    shipTwoBody.classList.add("ship-body", "horizontal-body");
     shipTwoBody.id = "ship-two-body";
     shipTwoBody.dataset.num = "2";
     shipTwoBody.dataset.len = "4";
@@ -101,7 +107,7 @@ export class ScreenController {
     const shipThreeTitle = document.createElement("h3");
     shipThreeTitle.textContent = "Ship No.3";
     const shipThreeBody = document.createElement("div");
-    shipThreeBody.classList.add("ship-body");
+    shipThreeBody.classList.add("ship-body", "horizontal-body");
     shipThreeBody.id = "ship-three-body";
     shipThreeBody.dataset.num = "3";
     shipThreeBody.dataset.len = "3";
@@ -121,7 +127,7 @@ export class ScreenController {
     const shipFourTitle = document.createElement("h3");
     shipFourTitle.textContent = "Ship No.4";
     const shipFourBody = document.createElement("div");
-    shipFourBody.classList.add("ship-body");
+    shipFourBody.classList.add("ship-body", "horizontal-body");
     shipFourBody.id = "ship-four-body";
     shipFourBody.dataset.num = "4";
     shipFourBody.dataset.len = "3";
@@ -141,7 +147,7 @@ export class ScreenController {
     const shipFiveTitle = document.createElement("h3");
     shipFiveTitle.textContent = "Ship No.5";
     const shipFiveBody = document.createElement("div");
-    shipFiveBody.classList.add("ship-body");
+    shipFiveBody.classList.add("ship-body", "horizontal-body");
     shipFiveBody.id = "ship-five-body";
     shipFiveBody.dataset.num = "5";
     shipFiveBody.dataset.len = "2";
@@ -156,8 +162,8 @@ export class ScreenController {
     }
     shipFive.append(shipFiveTitle, shipFiveBody);
 
-    shipType.append(shipOne, shipTwo, shipThree, shipFour, shipFive);
-    instruction.append(battelshipSubtitle, shipType);
+    shipList.append(shipOne, shipTwo, shipThree, shipFour, shipFive);
+    instruction.append(subtitleContainer, shipList);
 
     main.append(humanPlayer, instruction);
     body.append(main);
@@ -165,12 +171,16 @@ export class ScreenController {
 
   dragDrop() {
     const body = document.querySelector("body");
-    let shipNum, shipLength;
+    let shipNum, shipLength, direction;
 
     body.addEventListener("dragstart", (ev) => {
       if (!ev.target.classList.contains("ship-body")) return;
+
       shipNum = parseInt(ev.target.dataset.num);
       shipLength = parseInt(ev.target.dataset.len);
+      direction = ev.target.classList.contains("horizontal-body")
+        ? true
+        : false;
     });
 
     body.addEventListener("dragover", (ev) => {
@@ -187,7 +197,7 @@ export class ScreenController {
       const result = this.game.humanPlayer.gameBoard.placeShip(
         shipNum,
         shipLength,
-        true,
+        direction,
         [x, y],
       );
       if (result) {
@@ -197,7 +207,24 @@ export class ScreenController {
       shipNum = null;
       shipLength = null;
       this.placeShipMenu();
-      console.log(this.placeShipList);
+      this.switchDirection();
+    });
+  }
+
+  switchDirection() {
+    const directionButton = document.querySelector("#direction-btn");
+    const shipList = document.querySelector(".ship-list");
+    const ships = document.querySelectorAll(".ship-body");
+    directionButton.addEventListener("click", () => {
+      ships.forEach((ship) => {
+        ship.classList.toggle("horizontal-body");
+        ship.classList.toggle("vertical-body");
+      });
+      shipList.classList.toggle("horizontal-list");
+      shipList.classList.toggle("vertical-list");
+      directionButton.textContent = shipList.classList.contains("vertical-list")
+        ? "Horizontal"
+        : "Vertical";
     });
   }
 

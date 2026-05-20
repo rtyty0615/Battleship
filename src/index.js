@@ -165,6 +165,8 @@ newUI.placeShipMenu();
 
 newUI.dragDrop();
 
+newUI.switchDirection();
+
 // newUI.render();
 
 // newUI.humanClick();
