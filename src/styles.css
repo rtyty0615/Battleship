@@ -6,6 +6,8 @@
 
 :root {
   --cell-size: 6rem;
+  --ship-color: grey;
+  --ship-border: 3px solid #333;
 }
 
 html {
@@ -105,7 +107,7 @@ main {
 .ship-body {
   display: inline-flex;
   align-items: center;
-  background-color: grey;
+  background-color: var(--ship-color);
 }
 
 .ship-body div {
@@ -114,10 +116,21 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #333;
+  border: var(--ship-border);
   border-right: none;
 }
 
 .ship-body div:last-child {
-  border-right: 1px solid #333;
+  border-right: var(--ship-border);
+}
+
+.placed-ship-cell {
+  background-color: var(--ship-color);
+  border: var(--ship-border);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.already-place {
+  background-color: rgb(203, 203, 203);
 }
