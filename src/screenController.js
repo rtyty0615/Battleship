@@ -62,109 +62,43 @@ export class ScreenController {
     const shipList = document.createElement("div");
     shipList.classList.add("ship-list", "horizontal-list");
 
-    const shipOne = document.createElement("div");
-    shipOne.id = "ship-one";
-    const shipOneTitle = document.createElement("h3");
-    shipOneTitle.textContent = "Ship No.1";
-    const shipOneBody = document.createElement("div");
-    shipOneBody.classList.add("ship-body", "horizontal-body");
-    shipOneBody.id = "ship-one-body";
-    shipOneBody.dataset.num = "1";
-    shipOneBody.dataset.len = "5";
-    if (this.placeShipList.includes(1)) {
-      shipOneBody.classList.add("already-place");
-    } else {
-      shipOneBody.draggable = true;
-    }
-    for (let i = 0; i < 5; i++) {
-      const cell = document.createElement("div");
-      shipOneBody.append(cell);
-    }
-    shipOne.append(shipOneTitle, shipOneBody);
+    const fleetConfig = [
+      { num: 1, len: 5, title: "Ship No.1", id: "ship-one" },
+      { num: 2, len: 4, title: "Ship No.2", id: "ship-two" },
+      { num: 3, len: 3, title: "Ship No.3", id: "ship-three" },
+      { num: 4, len: 3, title: "Ship No.4", id: "ship-four" },
+      { num: 5, len: 2, title: "Ship No.5", id: "ship-five" },
+    ];
 
-    const shipTwo = document.createElement("div");
-    shipTwo.id = "ship-two";
-    const shipTwoTitle = document.createElement("h3");
-    shipTwoTitle.textContent = "Ship No.2";
-    const shipTwoBody = document.createElement("div");
-    shipTwoBody.classList.add("ship-body", "horizontal-body");
-    shipTwoBody.id = "ship-two-body";
-    shipTwoBody.dataset.num = "2";
-    shipTwoBody.dataset.len = "4";
-    if (this.placeShipList.includes(2)) {
-      shipTwoBody.classList.add("already-place");
-    } else {
-      shipTwoBody.draggable = true;
-    }
-    for (let i = 0; i < 4; i++) {
-      const cell = document.createElement("div");
-      shipTwoBody.append(cell);
-    }
-    shipTwo.append(shipTwoTitle, shipTwoBody);
+    fleetConfig.forEach((shipData) => {
+      const ship = document.createElement("div");
+      ship.id = shipData.id;
 
-    const shipThree = document.createElement("div");
-    shipThree.id = "ship-three";
-    const shipThreeTitle = document.createElement("h3");
-    shipThreeTitle.textContent = "Ship No.3";
-    const shipThreeBody = document.createElement("div");
-    shipThreeBody.classList.add("ship-body", "horizontal-body");
-    shipThreeBody.id = "ship-three-body";
-    shipThreeBody.dataset.num = "3";
-    shipThreeBody.dataset.len = "3";
-    if (this.placeShipList.includes(3)) {
-      shipThreeBody.classList.add("already-place");
-    } else {
-      shipThreeBody.draggable = true;
-    }
-    for (let i = 0; i < 3; i++) {
-      const cell = document.createElement("div");
-      shipThreeBody.append(cell);
-    }
-    shipThree.append(shipThreeTitle, shipThreeBody);
+      const shipTitle = document.createElement("h3");
+      shipTitle.textContent = shipData.title;
 
-    const shipFour = document.createElement("div");
-    shipFour.id = "ship-four";
-    const shipFourTitle = document.createElement("h3");
-    shipFourTitle.textContent = "Ship No.4";
-    const shipFourBody = document.createElement("div");
-    shipFourBody.classList.add("ship-body", "horizontal-body");
-    shipFourBody.id = "ship-four-body";
-    shipFourBody.dataset.num = "4";
-    shipFourBody.dataset.len = "3";
-    if (this.placeShipList.includes(4)) {
-      shipFourBody.classList.add("already-place");
-    } else {
-      shipFourBody.draggable = true;
-    }
-    for (let i = 0; i < 3; i++) {
-      const cell = document.createElement("div");
-      shipFourBody.append(cell);
-    }
-    shipFour.append(shipFourTitle, shipFourBody);
+      const shipBody = document.createElement("div");
+      shipBody.classList.add("ship-body", "horizontal-body");
+      shipBody.id = `${shipData.id}-body`;
+      shipBody.dataset.num = shipData.num;
+      shipBody.dataset.len = shipData.len;
 
-    const shipFive = document.createElement("div");
-    shipFive.id = "ship-five";
-    const shipFiveTitle = document.createElement("h3");
-    shipFiveTitle.textContent = "Ship No.5";
-    const shipFiveBody = document.createElement("div");
-    shipFiveBody.classList.add("ship-body", "horizontal-body");
-    shipFiveBody.id = "ship-five-body";
-    shipFiveBody.dataset.num = "5";
-    shipFiveBody.dataset.len = "2";
-    if (this.placeShipList.includes(5)) {
-      shipFiveBody.classList.add("already-place");
-    } else {
-      shipFiveBody.draggable = true;
-    }
-    for (let i = 0; i < 2; i++) {
-      const cell = document.createElement("div");
-      shipFiveBody.append(cell);
-    }
-    shipFive.append(shipFiveTitle, shipFiveBody);
+      if (this.placeShipList.includes(shipData.num)) {
+        shipBody.classList.add("already-place");
+      } else {
+        shipBody.draggable = true;
+      }
 
-    shipList.append(shipOne, shipTwo, shipThree, shipFour, shipFive);
+      for (let i = 0; i < shipData.len; i++) {
+        const cell = document.createElement("div");
+        shipBody.append(cell);
+      }
+
+      ship.append(shipTitle, shipBody);
+      shipList.append(ship);
+    });
+
     instruction.append(subtitleContainer, shipList);
-
     main.append(humanPlayer, instruction);
     body.append(main);
   }
@@ -195,6 +129,9 @@ export class ScreenController {
       const shipNum = parseInt(ev.dataTransfer.getData("ship-num"));
       const shipLength = parseInt(ev.dataTransfer.getData("ship-len"));
       const direction = ev.dataTransfer.getData("ship-dir") === "true";
+
+      const dropCell = ev.target.closest("div[data-row]");
+      if (!dropCell) return;
 
       if (!shipNum || !shipLength) return;
       const x = parseInt(ev.target.dataset.row);
