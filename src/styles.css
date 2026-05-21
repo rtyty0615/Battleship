@@ -35,7 +35,7 @@ h2 {
 }
 
 h3 {
-  font-size: 3rem;
+  font-size: 3.5rem;
 }
 
 input,
@@ -50,7 +50,7 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
 }
 
 body {
@@ -60,6 +60,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 50px;
+  position: relative;
 }
 
 main {
@@ -67,6 +68,15 @@ main {
   flex-direction: row;
   gap: 80px;
   justify-content: center;
+}
+
+#human-player,
+#computer-player {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
 }
 
 #human-player-board,
@@ -205,4 +215,16 @@ main {
 
 .miss {
   background-color: lightblue;
+}
+
+#new-game-container {
+  position: absolute;
+  bottom: 5%;
+}
+
+#new-game-btn {
+  background-color: rgb(255, 210, 152);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 3.5rem;
 }

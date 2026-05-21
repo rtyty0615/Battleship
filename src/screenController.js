@@ -1,4 +1,5 @@
 import "./styles.css";
+import { newGame } from "./index.js";
 
 export class ScreenController {
   constructor(game) {
@@ -196,7 +197,7 @@ export class ScreenController {
     });
   }
 
-  render(message = "Your turn") {
+  async render(message = "Your turn") {
     const body = document.querySelector("body");
     body.innerHTML = "";
     const header = document.createElement("header");
@@ -210,7 +211,7 @@ export class ScreenController {
     const main = document.createElement("main");
     const humanPlayer = document.createElement("div");
     humanPlayer.id = "human-player";
-    const humanPlayerTitle = document.createElement("h2");
+    const humanPlayerTitle = document.createElement("h3");
     humanPlayerTitle.id = "human-player-title";
     humanPlayerTitle.textContent = "Your Board";
 
@@ -244,9 +245,9 @@ export class ScreenController {
 
     const computerPlayer = document.createElement("div");
     computerPlayer.id = "computer-player";
-    const computerPlayerTitle = document.createElement("h2");
+    const computerPlayerTitle = document.createElement("h3");
     computerPlayerTitle.id = "computer-player-title";
-    computerPlayerTitle.textContent = "Computer Player Board";
+    computerPlayerTitle.textContent = "Computer Player's Board";
 
     const computerPlayerBoard = document.createElement("div");
     computerPlayerBoard.id = "computer-player-board";
@@ -276,6 +277,20 @@ export class ScreenController {
 
     main.append(humanPlayer, computerPlayer);
     body.append(main);
+
+    if (this.game.finalResult) {
+      await new Promise((r) => setTimeout(r, 1000));
+      const newGameContainer = document.createElement("div");
+      newGameContainer.id = "new-game-container";
+      const newGameBtn = document.createElement("button");
+      newGameBtn.textContent = "New Game";
+      newGameBtn.id = "new-game-btn";
+      newGameBtn.addEventListener("click", () => {
+        newGame();
+      });
+      newGameContainer.append(newGameBtn);
+      body.append(newGameContainer);
+    }
   }
 
   humanClick() {
@@ -310,7 +325,7 @@ export class ScreenController {
 
       if (result.gameOver) {
         await new Promise((r) => setTimeout(r, 1000));
-        this.render("All ships destroyed! You wins!");
+        this.render("All ships destroyed! You win!");
         return;
       }
       await this.computerTurn();

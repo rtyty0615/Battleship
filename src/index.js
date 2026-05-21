@@ -154,11 +154,13 @@ class GameController {
     this.activePlayer = this.activePlayer === "human" ? "computer" : "human";
   }
 }
-const newGame = new GameController();
-const newUI = new ScreenController(newGame);
 
-newUI.placeShipMenu();
+export function newGame() {
+  const newGame = new GameController();
+  const newUI = new ScreenController(newGame);
+  newUI.placeShipMenu();
+  newUI.dragDrop();
+  newUI.switchDirection();
+}
 
-newUI.dragDrop();
-
-newUI.switchDirection();
+newGame();
