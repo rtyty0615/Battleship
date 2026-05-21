@@ -171,16 +171,16 @@ export class ScreenController {
 
   dragDrop() {
     const body = document.querySelector("body");
-    let shipNum, shipLength, direction;
 
     body.addEventListener("dragstart", (ev) => {
       if (!ev.target.classList.contains("ship-body")) return;
 
-      shipNum = parseInt(ev.target.dataset.num);
-      shipLength = parseInt(ev.target.dataset.len);
-      direction = ev.target.classList.contains("horizontal-body")
+      ev.dataTransfer.setData("ship-num", ev.target.dataset.num);
+      ev.dataTransfer.setData("ship-len", ev.target.dataset.len);
+      const direction = ev.target.classList.contains("horizontal-body")
         ? true
         : false;
+      ev.dataTransfer.setData("ship-dir", direction);
     });
 
     body.addEventListener("dragover", (ev) => {
@@ -191,6 +191,11 @@ export class ScreenController {
     body.addEventListener("drop", (ev) => {
       if (!ev.target.closest(".target-zone")) return;
       ev.preventDefault();
+
+      const shipNum = parseInt(ev.dataTransfer.getData("ship-num"));
+      const shipLength = parseInt(ev.dataTransfer.getData("ship-len"));
+      const direction = ev.dataTransfer.getData("ship-dir") === "true";
+
       if (!shipNum || !shipLength) return;
       const x = parseInt(ev.target.dataset.row);
       const y = parseInt(ev.target.dataset.column);
@@ -204,8 +209,6 @@ export class ScreenController {
         return;
       }
       this.placeShipList.push(shipNum);
-      shipNum = null;
-      shipLength = null;
       this.placeShipMenu();
       this.switchDirection();
     });
