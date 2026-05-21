@@ -4,6 +4,7 @@ export class ScreenController {
   constructor(game) {
     this.game = game;
     this.placeShipList = [];
+    this.shipTotalNum = 0;
     this.isHorizontal = true;
   }
 
@@ -73,6 +74,7 @@ export class ScreenController {
       { num: 4, len: 3, title: "Ship No.4", id: "ship-four" },
       { num: 5, len: 2, title: "Ship No.5", id: "ship-five" },
     ];
+    this.shipTotalNum = fleetConfig.length;
     const orientationClass = this.isHorizontal
       ? "horizontal-body"
       : "vertical-body";
@@ -138,7 +140,7 @@ export class ScreenController {
       cell.style.backgroundColor = "";
     });
 
-    body.addEventListener("drop", (ev) => {
+    body.addEventListener("drop", async (ev) => {
       const cell = ev.target.closest?.("div[data-row]");
       if (!cell || !ev.target.closest?.(".target-zone")) return;
       ev.preventDefault();
@@ -167,6 +169,12 @@ export class ScreenController {
       this.placeShipList.push(shipNum);
       this.placeShipMenu();
       this.switchDirection();
+      if (this.shipTotalNum === this.placeShipList.length) {
+        await new Promise((r) => setTimeout(r, 1000));
+        this.render();
+        this.humanClick();
+        this.game.randomizeShips();
+      }
     });
   }
 
@@ -220,13 +228,14 @@ export class ScreenController {
         column.dataset.row = i;
         row.appendChild(column);
         const shipCell = gameBoardHuman.grid[i][j];
-        if (shipCell !== 0) {
-          column.textContent = shipCell;
-          if (shipCell < 0) {
-            column.style.backgroundColor = "red";
-          }
-          if (shipCell === "x") {
-            column.style.backgroundColor = "blue";
+        if (shipCell === "x") {
+          column.classList.add("miss");
+        } else {
+          if (shipCell !== 0) {
+            column.classList.add("placed-ship-cell");
+            if (shipCell < 0) {
+              column.classList.add("hit");
+            }
           }
         }
       }
@@ -254,14 +263,11 @@ export class ScreenController {
         row.appendChild(column);
         const shipCell = gameBoardComputer.grid[i][j];
         if (shipCell === "x") {
-          column.textContent = "•";
-          column.style.backgroundColor = "blue";
-          column.style.color = "white";
+          column.classList.add("miss");
         }
         if (shipCell < 0) {
-          column.textContent = "•";
-          column.style.backgroundColor = "red";
-          column.style.color = "white";
+          column.classList.add("placed-ship-cell");
+          column.classList.add("hit");
         }
       }
     }

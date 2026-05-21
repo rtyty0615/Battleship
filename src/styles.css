@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 :root {
@@ -12,6 +14,12 @@
 
 html {
   font-size: 62.5%;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 body {
@@ -189,4 +197,12 @@ main {
 .ship-list {
   width: 80rem;
   height: 50rem;
+}
+
+.hit {
+  background-color: pink;
+}
+
+.miss {
+  background-color: lightblue;
 }

@@ -26,13 +26,6 @@ class GameController {
   }
 
   randomizeShips() {
-    this._placeShipRandomly(this.computerPlayer);
-    this._placeShipRandomly(this.humanPlayer);
-    console.log(this.computerPlayer.gameBoard.grid);
-    console.log(this.humanPlayer.gameBoard.grid);
-  }
-
-  _placeShipRandomly(player) {
     const shipType = [
       [1, 5],
       [2, 4],
@@ -47,7 +40,12 @@ class GameController {
         const x = Math.floor(Math.random() * 10);
         const y = Math.floor(Math.random() * 10);
         const direction = Math.random() >= 0.5;
-        result = player.gameBoard.placeShip(i[0], i[1], direction, [x, y]);
+        result = this.computerPlayer.gameBoard.placeShip(
+          i[0],
+          i[1],
+          direction,
+          [x, y],
+        );
       } while (result);
     }
   }
@@ -159,14 +157,8 @@ class GameController {
 const newGame = new GameController();
 const newUI = new ScreenController(newGame);
 
-// newGame.randomizeShips();
-
 newUI.placeShipMenu();
 
 newUI.dragDrop();
 
 newUI.switchDirection();
-
-// newUI.render();
-
-// newUI.humanClick();
