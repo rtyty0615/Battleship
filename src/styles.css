@@ -89,6 +89,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 50px;
+  align-items: flex-start;
 }
 
 #subtitle-container {
@@ -97,6 +98,7 @@ main {
   justify-content: center;
   align-items: center;
   gap: 40px;
+  justify-content: flex-start;
 }
 
 #direction-btn {
@@ -182,4 +184,9 @@ main {
 
 .already-place {
   background-color: rgb(203, 203, 203);
+}
+
+.ship-list {
+  width: 80rem;
+  height: 50rem;
 }

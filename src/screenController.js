@@ -4,6 +4,7 @@ export class ScreenController {
   constructor(game) {
     this.game = game;
     this.placeShipList = [];
+    this.isHorizontal = true;
   }
 
   print() {
@@ -56,11 +57,14 @@ export class ScreenController {
     battleshipSubtitle.textContent = "Place your Ship:";
     const directionButton = document.createElement("button");
     directionButton.id = "direction-btn";
-    directionButton.textContent = "Vertical";
+    directionButton.textContent = this.isHorizontal ? "Vertical" : "Horizontal";
     subtitleContainer.append(battleshipSubtitle, directionButton);
 
     const shipList = document.createElement("div");
-    shipList.classList.add("ship-list", "horizontal-list");
+    shipList.classList.add(
+      "ship-list",
+      this.isHorizontal ? "horizontal-list" : "vertical-list",
+    );
 
     const fleetConfig = [
       { num: 1, len: 5, title: "Ship No.1", id: "ship-one" },
@@ -69,6 +73,9 @@ export class ScreenController {
       { num: 4, len: 3, title: "Ship No.4", id: "ship-four" },
       { num: 5, len: 2, title: "Ship No.5", id: "ship-five" },
     ];
+    const orientationClass = this.isHorizontal
+      ? "horizontal-body"
+      : "vertical-body";
 
     fleetConfig.forEach((shipData) => {
       const ship = document.createElement("div");
@@ -78,7 +85,7 @@ export class ScreenController {
       shipTitle.textContent = shipData.title;
 
       const shipBody = document.createElement("div");
-      shipBody.classList.add("ship-body", "horizontal-body");
+      shipBody.classList.add("ship-body", orientationClass);
       shipBody.id = `${shipData.id}-body`;
       shipBody.dataset.num = shipData.num;
       shipBody.dataset.len = shipData.len;
@@ -107,7 +114,7 @@ export class ScreenController {
     const body = document.querySelector("body");
 
     body.addEventListener("dragstart", (ev) => {
-      if (!ev.target.classList.contains("ship-body")) return;
+      if (!ev.target.classList?.contains("ship-body")) return;
 
       ev.dataTransfer.setData("ship-num", ev.target.dataset.num);
       ev.dataTransfer.setData("ship-len", ev.target.dataset.len);
@@ -118,12 +125,12 @@ export class ScreenController {
     });
 
     body.addEventListener("dragover", (ev) => {
-      if (!ev.target.closest(".target-zone")) return;
+      if (!ev.target.closest?.(".target-zone")) return;
       ev.preventDefault();
     });
 
     body.addEventListener("drop", (ev) => {
-      if (!ev.target.closest(".target-zone")) return;
+      if (!ev.target.closest?.(".target-zone")) return;
       ev.preventDefault();
 
       const shipNum = parseInt(ev.dataTransfer.getData("ship-num"));
@@ -156,15 +163,16 @@ export class ScreenController {
     const shipList = document.querySelector(".ship-list");
     const ships = document.querySelectorAll(".ship-body");
     directionButton.addEventListener("click", () => {
+      this.isHorizontal = !this.isHorizontal;
       ships.forEach((ship) => {
         ship.classList.toggle("horizontal-body");
         ship.classList.toggle("vertical-body");
       });
       shipList.classList.toggle("horizontal-list");
       shipList.classList.toggle("vertical-list");
-      directionButton.textContent = shipList.classList.contains("vertical-list")
-        ? "Horizontal"
-        : "Vertical";
+      directionButton.textContent = this.isHorizontal
+        ? "Vertical"
+        : "Horizontal";
     });
   }
 
