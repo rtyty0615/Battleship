@@ -125,13 +125,25 @@ export class ScreenController {
     });
 
     body.addEventListener("dragover", (ev) => {
-      if (!ev.target.closest?.(".target-zone")) return;
+      const cell = ev.target.closest?.("div[data-row]");
+      if (!cell || !ev.target.closest?.(".target-zone")) return;
       ev.preventDefault();
+
+      cell.style.backgroundColor = "red";
+    });
+
+    body.addEventListener("dragleave", (ev) => {
+      const cell = ev.target.closest?.("div[data-row]");
+      if (!cell || !ev.target.closest?.(".target-zone")) return;
+      cell.style.backgroundColor = "";
     });
 
     body.addEventListener("drop", (ev) => {
-      if (!ev.target.closest?.(".target-zone")) return;
+      const cell = ev.target.closest?.("div[data-row]");
+      if (!cell || !ev.target.closest?.(".target-zone")) return;
       ev.preventDefault();
+
+      cell.style.backgroundColor = "";
 
       const shipNum = parseInt(ev.dataTransfer.getData("ship-num"));
       const shipLength = parseInt(ev.dataTransfer.getData("ship-len"));
