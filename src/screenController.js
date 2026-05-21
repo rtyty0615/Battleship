@@ -7,6 +7,7 @@ export class ScreenController {
     this.placeShipList = [];
     this.shipTotalNum = 0;
     this.isHorizontal = true;
+    this.abortController = new AbortController();
   }
 
   print() {
@@ -116,67 +117,83 @@ export class ScreenController {
   dragDrop() {
     const body = document.querySelector("body");
 
-    body.addEventListener("dragstart", (ev) => {
-      if (!ev.target.classList?.contains("ship-body")) return;
+    body.addEventListener(
+      "dragstart",
+      (ev) => {
+        if (!ev.target.classList?.contains("ship-body")) return;
 
-      ev.dataTransfer.setData("ship-num", ev.target.dataset.num);
-      ev.dataTransfer.setData("ship-len", ev.target.dataset.len);
-      const direction = ev.target.classList.contains("horizontal-body")
-        ? true
-        : false;
-      ev.dataTransfer.setData("ship-dir", direction);
-    });
+        ev.dataTransfer.setData("ship-num", ev.target.dataset.num);
+        ev.dataTransfer.setData("ship-len", ev.target.dataset.len);
+        const direction = ev.target.classList.contains("horizontal-body")
+          ? true
+          : false;
+        ev.dataTransfer.setData("ship-dir", direction);
+      },
+      { signal: this.abortController.signal },
+    );
 
-    body.addEventListener("dragover", (ev) => {
-      const cell = ev.target.closest?.("div[data-row]");
-      if (!cell || !ev.target.closest?.(".target-zone")) return;
-      ev.preventDefault();
+    body.addEventListener(
+      "dragover",
+      (ev) => {
+        const cell = ev.target.closest?.("div[data-row]");
+        if (!cell || !ev.target.closest?.(".target-zone")) return;
+        ev.preventDefault();
 
-      cell.style.backgroundColor = "red";
-    });
+        cell.style.backgroundColor = "red";
+      },
+      { signal: this.abortController.signal },
+    );
 
-    body.addEventListener("dragleave", (ev) => {
-      const cell = ev.target.closest?.("div[data-row]");
-      if (!cell || !ev.target.closest?.(".target-zone")) return;
-      cell.style.backgroundColor = "";
-    });
+    body.addEventListener(
+      "dragleave",
+      (ev) => {
+        const cell = ev.target.closest?.("div[data-row]");
+        if (!cell || !ev.target.closest?.(".target-zone")) return;
+        cell.style.backgroundColor = "";
+      },
+      { signal: this.abortController.signal },
+    );
 
-    body.addEventListener("drop", async (ev) => {
-      const cell = ev.target.closest?.("div[data-row]");
-      if (!cell || !ev.target.closest?.(".target-zone")) return;
-      ev.preventDefault();
+    body.addEventListener(
+      "drop",
+      async (ev) => {
+        const cell = ev.target.closest?.("div[data-row]");
+        if (!cell || !ev.target.closest?.(".target-zone")) return;
+        ev.preventDefault();
 
-      cell.style.backgroundColor = "";
+        cell.style.backgroundColor = "";
 
-      const shipNum = parseInt(ev.dataTransfer.getData("ship-num"));
-      const shipLength = parseInt(ev.dataTransfer.getData("ship-len"));
-      const direction = ev.dataTransfer.getData("ship-dir") === "true";
+        const shipNum = parseInt(ev.dataTransfer.getData("ship-num"));
+        const shipLength = parseInt(ev.dataTransfer.getData("ship-len"));
+        const direction = ev.dataTransfer.getData("ship-dir") === "true";
 
-      const dropCell = ev.target.closest("div[data-row]");
-      if (!dropCell) return;
+        const dropCell = ev.target.closest("div[data-row]");
+        if (!dropCell) return;
 
-      if (!shipNum || !shipLength) return;
-      const x = parseInt(ev.target.dataset.row);
-      const y = parseInt(ev.target.dataset.column);
-      const result = this.game.humanPlayer.gameBoard.placeShip(
-        shipNum,
-        shipLength,
-        direction,
-        [x, y],
-      );
-      if (result) {
-        return;
-      }
-      this.placeShipList.push(shipNum);
-      this.placeShipMenu();
-      this.switchDirection();
-      if (this.shipTotalNum === this.placeShipList.length) {
-        await new Promise((r) => setTimeout(r, 1000));
-        this.render();
-        this.humanClick();
-        this.game.randomizeShips();
-      }
-    });
+        if (!shipNum || !shipLength) return;
+        const x = parseInt(ev.target.dataset.row);
+        const y = parseInt(ev.target.dataset.column);
+        const result = this.game.humanPlayer.gameBoard.placeShip(
+          shipNum,
+          shipLength,
+          direction,
+          [x, y],
+        );
+        if (result) {
+          return;
+        }
+        this.placeShipList.push(shipNum);
+        this.placeShipMenu();
+        this.switchDirection();
+        if (this.shipTotalNum === this.placeShipList.length) {
+          await new Promise((r) => setTimeout(r, 1000));
+          this.render();
+          this.humanClick();
+          this.game.randomizeShips();
+        }
+      },
+      { signal: this.abortController.signal },
+    );
   }
 
   switchDirection() {
@@ -286,6 +303,7 @@ export class ScreenController {
       newGameBtn.textContent = "New Game";
       newGameBtn.id = "new-game-btn";
       newGameBtn.addEventListener("click", () => {
+        this.abortController.abort();
         newGame();
       });
       newGameContainer.append(newGameBtn);
@@ -295,42 +313,46 @@ export class ScreenController {
 
   humanClick() {
     const computerBoard = document.querySelector("body");
-    computerBoard.addEventListener("click", async (event) => {
-      if (this.game.activePlayer !== "human" || this.game.finalResult) {
-        return;
-      }
-      if (!event.target.closest("#computer-player-board")) return;
-      const column = event.target.closest("[data-column]");
-      if (!column) return;
-      this.render("You are aiming...");
-      const rowId = parseInt(column.dataset.row);
-      const columnId = parseInt(column.dataset.column);
-      const result = this.game.playTurn(rowId, columnId);
-      if (result.type === "already-hit") {
-        this.render();
-        return;
-      }
-      await new Promise((r) => setTimeout(r, 1000));
-
-      if (result.type === "miss") {
-        this.render("You miss!");
-      }
-      if (result.hit) {
-        this.render("You hit the enemy's ship!");
-      }
-      if (result.isSunk) {
+    computerBoard.addEventListener(
+      "click",
+      async (event) => {
+        if (this.game.activePlayer !== "human" || this.game.finalResult) {
+          return;
+        }
+        if (!event.target.closest("#computer-player-board")) return;
+        const column = event.target.closest("[data-column]");
+        if (!column) return;
+        this.render("You are aiming...");
+        const rowId = parseInt(column.dataset.row);
+        const columnId = parseInt(column.dataset.column);
+        const result = this.game.playTurn(rowId, columnId);
+        if (result.type === "already-hit") {
+          this.render();
+          return;
+        }
         await new Promise((r) => setTimeout(r, 1000));
-        this.render(`Computer's Ship ${result.shipId} just sank!`);
-      }
 
-      if (result.gameOver) {
-        await new Promise((r) => setTimeout(r, 1000));
-        this.render("All ships destroyed! You win!");
+        if (result.type === "miss") {
+          this.render("You miss!");
+        }
+        if (result.hit) {
+          this.render("You hit the enemy's ship!");
+        }
+        if (result.isSunk) {
+          await new Promise((r) => setTimeout(r, 1000));
+          this.render(`Computer's Ship ${result.shipId} just sank!`);
+        }
+
+        if (result.gameOver) {
+          await new Promise((r) => setTimeout(r, 1000));
+          this.render("All ships destroyed! You win!");
+          return;
+        }
+        await this.computerTurn();
         return;
-      }
-      await this.computerTurn();
-      return;
-    });
+      },
+      { signal: this.abortController.signal },
+    );
   }
 
   async computerTurn() {
