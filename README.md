@@ -4,7 +4,7 @@ A full-featured, browser-based implementation of the classic game Battleship. Bu
 
 This project emphasizes modular, object-oriented programming (OOP), native DOM interactions, and intelligent game logic.
 
-## 🔗 Live Demo
+## Live Demo
 
 [Play Battleship Here](https://rtyty0615.github.io/Battleship/)
 
@@ -38,7 +38,7 @@ This project emphasizes modular, object-oriented programming (OOP), native DOM i
 
 ---
 
-## 🏗️ Project Architecture
+## Project Architecture
 
 The application is structured using ES6 Classes to ensure modularity and scalability:
 
@@ -50,13 +50,46 @@ The application is structured using ES6 Classes to ensure modularity and scalabi
 
 ---
 
-## 🚀 Installation & Local Setup
+## Installation & Local Setup
 
-To run this project locally, ensure you have [Node.js](https://nodejs.org/) installed, then follow these steps:
+To run this project locally, ensure you have Node.js installed, then follow these steps:
 
 1. **Clone the repository:**
 
 ```bash
-   git clone [https://github.com/](https://github.com/)<your-github-username>/<your-repo-name>.git
-   cd <your-repo-name>
+   git clone [https://github.com/rtyty0615/Battleship.git](https://github.com/rtyty0615/Battleship.git)
+   cd Battleship
+```
+
+2. **Install dependencies:**
+
+```bash
+   npm install
+```
+
+3. **Build the project:**
+
+```bash
+   npm run build
+```
+
+4. **Run the app locally:**
+   Open the `index.html` file located in the `dist/` directory in your preferred web browser.
+
+---
+
+## Deployment
+
+This project is configured to deploy automatically to GitHub Pages. To deploy the latest build:
+
+```bash
+npm run deploy
+```
+
+---
+
+_Created by [rtyty0615](https://github.com/rtyty0615)_
+
+```
+
 ```
